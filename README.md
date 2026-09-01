@@ -39,13 +39,6 @@ git checkout -b feature/12
 # 프론트 개발 규칙
 
 # 백엔드 개발 규칙
-### 계층형 아키텍처 및 패키지 구조
-
-* **Controller (`presentation`):** HTTP 요청/응답 처리 및 DTO 변환만 수행. 비즈니스 로직 포함 금지.
-* **Service (`application`):** 핵심 비즈니스 로직 수행 및 트랜잭션(`@Transactional`) 관리.
-* **Repository (`infrastructure`):** 데이터베이스와의 데이터 입출력 담당.
-* **Entity (`domain`):** 데이터베이스 테이블과 매핑되는 핵심 도메인 객체. 도메인 관련 로직은 엔티티 내부에 캡슐화.
-
 ### 작업 시 순서
 
 1. **Entity**: 설계한 ERD(데이터베이스 구조)를 토대로 작성.
@@ -53,6 +46,13 @@ git checkout -b feature/12
 3. **DTO**: API 명세서 형식에 맞춰서 프론트엔드와 주고받을 Request(요청 폼), Response(응답 결과) 상자 생성.
 4. **Service**: 핵심 비즈니스 로직(데이터 유효성 검사, 계산, 에러 처리 등) 담당.
 5. **Controller**: API 주소(URL)를 연결하고, 사용자의 요청(Request DTO)을 Service에 넘긴 뒤, 완료된 결과를 응답(Response DTO)으로 반환.
+
+### 계층형 아키텍처 및 패키지 구조
+
+* **Controller (`presentation`):** HTTP 요청/응답 처리 및 DTO 변환만 수행. 비즈니스 로직 포함 금지.
+* **Service (`application`):** 핵심 비즈니스 로직 수행 및 트랜잭션(`@Transactional`) 관리.
+* **Repository (`infrastructure`):** 데이터베이스와의 데이터 입출력 담당.
+* **Entity (`domain`):** 데이터베이스 테이블과 매핑되는 핵심 도메인 객체. 도메인 관련 로직은 엔티티 내부에 캡슐화.
 
 ### 네이밍 컨벤션
 
@@ -68,6 +68,5 @@ git checkout -b feature/12
 * **DTO 계층 분리:** Entity를 직접 클라이언트(API 응답)로 반환하지 말고, 반드시 DTO로 변환하여 전달.
 * **전역 예외 처리:** 컨트롤러마다 개별 예외 처리를 하지 않고, `@RestControllerAdvice`와 `@ExceptionHandler`를 사용하여 일관된 전역 예외 응답 형식을 유지.
 
-## 절대 금지!!!
-### 로컬에만 있는 `application_local.yaml` 파일 절대 깃허브에 올리지 않기!!! 
+### 절대 금지!!! 로컬에만 있는 `application_local.yaml` 파일 절대 깃허브에 올리지 않기!!! 
 * 패키지 구조, 네이밍 컨벤션, 설계 규칙 등은 리뷰 받고 고치면 되지만 로컬 파일은 깃허브에 올리면 되돌릴 수 없음!!!
