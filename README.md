@@ -67,7 +67,6 @@ git checkout -b feature/12     ->    브렌치 생성 및 브렌치로 바로 �
 ## 직관적인 변수 및 클래스 이름 짓기
 
 a1, box2, test_div 처럼 의미 없는 이름 금지.
-
 login-btn, card-container처럼 역할을 바로 알 수 있는 직관적인 변수로 지정합니다.
 
 ## 폴더 구조 정돈
