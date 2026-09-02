@@ -14,8 +14,17 @@
 ```bash
 git checkout dev
 git pull origin dev
-git checkout -b feature/12
+git checkout -b feature/12     ->    브렌치 생성 및 브렌치로 바로 이동
 ```
+
+## visual studio 작업 순서
+
+1. issue로 만든 브렌치로 이동
+2. git status로 상태 확인
+3. 작업 완료 후 git add .로 저장 ( 코드 내에서 ctrl+s로도 저장할 것! )
+4. 저장에 성공하면 git commit -m " type : 작업 내용 간단 설명 "
+5. git push origin '생성한 브렌치'  예) git push origin feat/3
+6. 오류 ( 빨간색 ) 안뜨고 성공 ( 파란색 ) 이 뜨면 모든 과정 완료한거임
 
 ## PR 규칙
 
@@ -36,7 +45,39 @@ git checkout -b feature/12
 | **chore**    | 빌드 과정, 패키지 설정, 잡무 등 로직과 무관한 수정 | `chore: npm 의존성 라이브러리 업데이트`   |
 | **docs** | 문서 추가, 수정, 삭제 | `docs: README.md 프로젝트 실행 방법 추가` |
 
+
 # 프론트 개발 규칙
+
+## Figma 기반 UI 구현 후 API 연동 (화면-로직 분리)
+
+1. HTML/CSS 관련 issue 생성
+2. HTML/CSS로 화면(피그마 디자인)을 똑같이 먼저 완성
+3. issue push해서 merge 후 api 연동 issue 생성
+4. 백엔드 데이터(API), 즉 api 연동을 작업
+5. issue push해서 merge
+
+## 하드코딩 지양 및 상수/변수화
+
+코드 안에 [http://127.0.0.1:8000](http://127.0.0.1:8000) 같은 서버 주소나
+과목 = ["국어", "영어", "수학"] 같은 목록을 직접 여러 번 적지 않습니다.
+
+**규칙**: 상단에 변수로 묶어두거나 한 파일(config.js)에 모아서 관리하게 합니다.
+
+## 직관적인 변수 및 클래스 이름 짓기
+
+a1, box2, test_div 처럼 의미 없는 이름 금지.
+
+login-btn, card-container처럼 역할을 바로 알 수 있는 직관적인 변수로 지정합니다.
+
+## 폴더 구조 정돈
+
+index.html, style.css, main.js 파일이 한곳에 널브러지지 않게 assets/images, css/, js/ 폴더로 나눕니다.
+
+## 주석 작성 필수화
+
+자신이 맡은 페이지 코드 위에 "어떤 역할을 하는 코드인지" 1~2줄 주석(//)을 쓰게 합니다. 
+생기부 내용을 정리할 때도 큰 도움이 됩니다.
+
 
 # 백엔드 개발 규칙
 ### 작업 시 순서
