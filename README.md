@@ -48,7 +48,6 @@ git checkout -b feature/12     ->    브렌치 생성 및 브렌치로 바로 �
 
 
 # 프론트 개발 규칙
-
 ## Figma 기반 UI 구현 후 API 연동 (화면-로직 분리)
 
 1. HTML/CSS 관련 issue 생성
