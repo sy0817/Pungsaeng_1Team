@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: 'mysql:8.0'
+    container_name: 'pungsaeng-mysql'
+    environment:
+      - 'MYSQL_DATABASE=pungsaeng'
+      - 'MYSQL_PASSWORD=pungsaeng1234'
+      - 'MYSQL_ROOT_PASSWORD=root1234'
+      - 'MYSQL_USER=pungsaeng'
+    ports:
+      - '3306:3306'
+    command: --innodb-buffer-pool-size=128M --innodb-log-buffer-size=8M --max-connections=50
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
