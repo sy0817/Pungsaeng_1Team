@@ -1,7 +1,6 @@
 :root {
   --sans: system-ui, "Segoe UI", Roboto, sans-serif;
   --heading: system-ui, "Segoe UI", Roboto, sans-serif;
-
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color: #f3f4f6;
@@ -15,21 +14,20 @@
   box-sizing: border-box;
 }
 
-
 html,
 body {
   margin: 0;
   padding: 0;
   background: #0f172a;
+  overflow-x: hidden;
 }
 
-/* 모든 페이지 공통 기본 틀 (시안 규격: 1440 x 1024) */
+/* Global base frame for all pages (design ref: 1440 x 1024) */
 #root {
-  width: 1440px;
-  height: 1024px;
+  width: 100%;
+  min-height: 100vh;
   margin: 0 auto;
   background: linear-gradient(180deg, #0f172a 0%, #062c22 100%);
-  overflow: hidden;
 }
 
 h1,
