@@ -1,5 +1,5 @@
-function Login() {
+function Taro() {
   return <div style={{ width: "100%", height: "100%" }}></div>;
 }
 
-export default Login;
+export default Taro;
