@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Check from "./pages/Check";
 import Login from "./pages/Login";
 import Mypage from "./pages/Mypage";
 import Prescription from "./pages/Prescription";
-import Signup from "./pages/Signup";
+import Signup from "./pages/SignUp";
 import Taro from "./pages/Taro";
 
 function App() {
