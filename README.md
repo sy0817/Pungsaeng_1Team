@@ -151,5 +151,5 @@ index.html, style.css, main.js 파일이 한곳에 널브러지지 않게 assets
 * **DTO 계층 분리:** Entity를 직접 클라이언트(API 응답)로 반환하지 말고, 반드시 DTO로 변환하여 전달.
 * **전역 예외 처리:** 컨트롤러마다 개별 예외 처리를 하지 않고, `@RestControllerAdvice`와 `@ExceptionHandler`를 사용하여 일관된 전역 예외 응답 형식을 유지.
 
-### 절대 금지!!! 로컬에만 있는 `application_local.yaml` 파일 절대 깃허브에 올리지 않기!!! 
+### 절대 금지!!! 로컬에만 있는 `application-secret.yaml` 파일 절대 깃허브에 올리지 않기!!! 
 * 패키지 구조, 네이밍 컨벤션, 설계 규칙 등은 리뷰 받고 고치면 되지만 로컬 파일은 깃허브에 올리면 되돌릴 수 없음!!!
