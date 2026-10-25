@@ -29,19 +29,26 @@ body {
   margin: 0;
   padding: 0;
 }
+/* 스크롤바 숨김 (스크롤 동작은 유지) */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
 body {
   min-height: 100vh;
-  background: #010711;
+  background: #141029;
   font-family: var(--sans);
 }
-/* Responsive full-width app background */
 #root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   min-height: 100vh;
-  background: linear-gradient(
-    180deg,
-    rgba(1, 7, 17, 0.7) 29.81%,
-    rgba(38, 2, 68, 0.7) 99.99%
-  );
+  background: linear-gradient(0deg, #141029 0%, #141029 100%), #fff;
 }
 h1,
 h2 {

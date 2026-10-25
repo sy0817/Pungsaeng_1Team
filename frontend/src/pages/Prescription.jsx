@@ -1,6 +1,4 @@
-﻿import Title from "../components/Title";
-
-function Prescription() {
+﻿function Prescription() {
   const pageStyle = {
     minHeight: "100vh",
     display: "flex",
@@ -18,7 +16,6 @@ function Prescription() {
 
   return (
     <div style={pageStyle}>
-      <Title />
       <main style={contentStyle}>처방전 콘텐츠 영역</main>
     </div>
   );
