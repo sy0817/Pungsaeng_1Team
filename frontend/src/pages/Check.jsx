@@ -1,4 +1,6 @@
-﻿function Check() {
+﻿import Header from "../components/Header";
+
+function Check() {
   const pageStyle = {
     position: "relative",
     width: "100%",
@@ -10,7 +12,7 @@
 
   const contentStyle = {
     display: "flex",
-    width: "1376px",
+    width: "100%",
     flexDirection: "column",
     alignItems: "flex-start",
     gap: "56px",
@@ -50,9 +52,10 @@
         }}
       />
 
-      <main style={{ ...contentStyle, position: "relative", zIndex: 1 }}>
-        고민 진단 콘텐츠 영역
-      </main>
+      <div style={{ ...contentStyle, position: "relative", zIndex: 1 }}>
+        <Header />
+        <main>고민 진단 콘텐츠 영역</main>
+      </div>
     </div>
   );
 }
