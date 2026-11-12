@@ -10,7 +10,7 @@ const activeIcon = (
   </svg>
 );
 
-function Subject_Tab({ label = "수학", selected = false, onClick }) {
+function Subject_Tab({ label = "수학", selected = false, onClick, icon = null, width = "201px", height }) {
   return (
     <div
       onClick={onClick}
@@ -19,22 +19,29 @@ function Subject_Tab({ label = "수학", selected = false, onClick }) {
         padding: "16px 8px",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: height ? "center" : undefined,
         gap: "4px",
-        width: "201px",
+        width,
+        height,
+        boxSizing: "border-box",
         borderRadius: "8px",
         background: selected ? "#F59E0B" : "#201C36",
         cursor: "pointer",
       }}
     >
-      {/* 아이콘 */}
-      <div
-        style={{
-          width: selected ? "18px" : "22px",
-          height: selected ? "18px" : "16px",
-        }}
-      >
-        {selected ? activeIcon : inactiveIcon}
-      </div>
+      {/* 아이콘 (icon prop이 있으면 그대로 사용) */}
+      {icon ? (
+        <div style={{ display: "flex" }}>{icon}</div>
+      ) : (
+        <div
+          style={{
+            width: selected ? "18px" : "22px",
+            height: selected ? "18px" : "16px",
+          }}
+        >
+          {selected ? activeIcon : inactiveIcon}
+        </div>
+      )}
 
       {/* 텍스트 */}
       <span

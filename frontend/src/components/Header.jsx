@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { getUserId, clearUserId } from "../utils/auth";
 
 const activeIcon = (
   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="10" viewBox="0 0 11 10" fill="none">
@@ -18,7 +19,7 @@ const tabs = [
     ),
   },
   {
-    label: "타로",
+    label: "타로 카드",
     path: "/taro",
     activeIcon,
     inactiveIcon: (
@@ -52,6 +53,12 @@ const tabs = [
 function Header() {
   const location = useLocation();
   const navigate = useNavigate();
+  const userId = getUserId();
+
+  const handleLogout = () => {
+    clearUserId();
+    navigate("/login");
+  };
 
   return (
     <div
@@ -146,7 +153,7 @@ function Header() {
         <div
           style={{
             display: "flex",
-            width: "105px",
+            minWidth: "105px",
             padding: "6px 12px",
             alignItems: "center",
             gap: "8px",
@@ -157,14 +164,15 @@ function Header() {
         >
           <div style={{ width: "8px", height: "8px", flexShrink: 0, borderRadius: "9999px", background: "#34D399" }} />
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-            <span style={{ color: "#FFF", fontFamily: '"Noto Sans KR"', fontSize: "12px", fontWeight: 700, lineHeight: "16px" }}>
-              김풍생 학생
+            <span style={{ color: "#FFF", fontFamily: '"Noto Sans KR"', fontSize: "12px", fontWeight: 700, lineHeight: "16px", whiteSpace: "nowrap" }}>
+              {userId ? `${userId} 학생` : "게스트"}
             </span>
           </div>
         </div>
 
         {/* 로그아웃 버튼 */}
         <div
+          onClick={handleLogout}
           style={{
             display: "flex",
             padding: "6px 12px",

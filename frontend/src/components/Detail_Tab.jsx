@@ -1,4 +1,4 @@
-function Detail_Tab({ label = "공통수학 1", selected = false, onClick }) {
+function Detail_Tab({ label = "공통수학 1", selected = false, onClick, width = "84px" }) {
   return (
     <div
       onClick={onClick}
@@ -7,7 +7,7 @@ function Detail_Tab({ label = "공통수학 1", selected = false, onClick }) {
         paddingTop: "1px",
         flexDirection: "column",
         alignItems: "flex-start",
-        width: "84px",
+        width,
         cursor: "pointer",
       }}
     >
