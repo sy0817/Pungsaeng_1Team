@@ -10,6 +10,7 @@ function Symptom_Card({
   description = "서술 텍스트가 들어갑니다",
   selected = false,
   onClick,
+  width = "418px",
 }) {
   const resolvedIcon = icon ?? getDefaultIcon(selected ? "#FFC174" : "#D8C3AD");
   return (
@@ -17,8 +18,9 @@ function Symptom_Card({
       onClick={onClick}
       style={{
         display: "flex",
-        width: "418px",
+        width,
         height: "70px",
+        boxSizing: "border-box",
         padding: "16px",
         alignItems: "flex-start",
         gap: "8px",
@@ -36,9 +38,11 @@ function Symptom_Card({
           alignItems: "flex-start",
         }}
       >
-        <div style={{ width: "17.771px", height: "18.604px" }}>
-          {resolvedIcon}
-        </div>
+        {icon ? (
+          resolvedIcon
+        ) : (
+          <div style={{ width: "17.771px", height: "18.604px" }}>{resolvedIcon}</div>
+        )}
       </div>
 
       {/* 텍스트 컨테이너 */}

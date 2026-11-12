@@ -4,13 +4,13 @@ const defaultIcon = (
   </svg>
 );
 
-function CTA({ icon = defaultIcon, label = "로그인", onClick }) {
+function CTA({ icon = defaultIcon, label = "로그인", onClick, width = "440px" }) {
   return (
     <div
       onClick={onClick}
       style={{
         display: "flex",
-        width: "440px",
+        width,
         height: "48px",
         justifyContent: "center",
         alignItems: "center",
