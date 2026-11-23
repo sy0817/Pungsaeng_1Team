@@ -1,0 +1,6 @@
+# 로컬 개발용 설정 (spring.profiles.default=local)
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
