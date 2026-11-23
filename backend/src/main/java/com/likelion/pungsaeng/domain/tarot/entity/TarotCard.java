@@ -43,8 +43,13 @@ public class TarotCard {
     @Column(name = "reversed_advice", columnDefinition = "TEXT")
     private String reversedAdvice;
 
+    // 처방 키워드 조합용 앞부분 (예: "돌파와") - 단독 표시용이 아님
     @Column(name = "keyword_prefix", nullable = false, length = 50)
     private String keywordPrefix;
+
+    // 마이페이지 등에 단독으로 보여주는 카드 키워드 (예: "한계 돌파 · 압박 극복"). 없으면 카드 이름 사용
+    @Column(name = "display_keyword", length = 100)
+    private String displayKeyword;
 
     // 고정 시간대 Enum -> 유저별 최빈 시간대 집계용
     @Enumerated(EnumType.STRING)
@@ -57,7 +62,8 @@ public class TarotCard {
     @Builder
     public TarotCard(String id, String name, String imageUrl, String quote, String advice,
                      String reversedQuote, String reversedAdvice,
-                     String keywordPrefix, RecommendedTime recommendedTime, String recommendedEnv) {
+                     String keywordPrefix, String displayKeyword,
+                     RecommendedTime recommendedTime, String recommendedEnv) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
@@ -66,8 +72,13 @@ public class TarotCard {
         this.reversedQuote = reversedQuote;
         this.reversedAdvice = reversedAdvice;
         this.keywordPrefix = keywordPrefix;
+        this.displayKeyword = displayKeyword;
         this.recommendedTime = recommendedTime;
         this.recommendedEnv = recommendedEnv;
+    }
+
+    public String getDisplayKeywordOrName() {
+        return displayKeyword != null && !displayKeyword.isBlank() ? displayKeyword : name;
     }
 
     public String getQuote(CardDirection direction) {

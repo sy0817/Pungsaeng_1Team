@@ -58,22 +58,16 @@ public class PrescriptionAssembler {
 
         return new PrescriptionResponse(
                 consultation.getId(),
-                keyword(card, primary, rule),
+                PrescriptionTexts.keyword(card, primary, rule.orElse(null)),
                 cardInfo(consultation),
                 new PrescriptionResponse.DiagnosisSummary(
-                        subjectLabel(consultation),
+                        PrescriptionTexts.subjectLabel(consultation),
                         symptomKeywords(consultation),
                         rule.map(CombinationRule::getComprehensiveAdvice).orElse(null)
                 ),
                 actionGuides(consultation),
                 consultation.getCreatedAt()
         );
-    }
-
-    private String keyword(TarotCard card, Symptom primary, Optional<CombinationRule> rule) {
-        return rule.map(CombinationRule::getCustomKeyword)
-                .filter(keyword -> !keyword.isBlank())
-                .orElseGet(() -> card.getKeywordPrefix() + " " + primary.getKeywordSuffix());
     }
 
     private PrescriptionResponse.CardInfo cardInfo(Consultation consultation) {
@@ -88,11 +82,6 @@ public class PrescriptionAssembler {
                 card.getRecommendedTime().getTimeRange(),
                 card.getRecommendedEnv()
         );
-    }
-
-    // 예) "수학 (공통수학 1)"
-    private String subjectLabel(Consultation consultation) {
-        return consultation.getSubjectType().getDescription() + " (" + consultation.getSubSubject() + ")";
     }
 
     // 대표 고민을 맨 앞에, 나머지는 선택한 순서대로
