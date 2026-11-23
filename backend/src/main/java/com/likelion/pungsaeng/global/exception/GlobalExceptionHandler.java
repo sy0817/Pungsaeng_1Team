@@ -7,6 +7,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
@@ -52,6 +53,18 @@ public class GlobalExceptionHandler {
                 ErrorCode.INVALID_INPUT.getCode(),
                 ErrorCode.INVALID_INPUT.getMessage(),
                 null
+        );
+        return ResponseEntity.status(ErrorCode.INVALID_INPUT.getStatus()).body(response);
+    }
+
+    // 경로 변수·쿼리 파라미터 타입 오류 (예: /prescriptions/abc) - 기존에는 500 으로 처리됨
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<?>> handleTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.warn("요청 파라미터 타입 오류: {}", e.getName());
+        ApiResponse<?> response = ApiResponse.error(
+                ErrorCode.INVALID_INPUT.getCode(),
+                ErrorCode.INVALID_INPUT.getMessage(),
+                List.of(Map.of("field", e.getName(), "reason", "형식이 올바르지 않습니다."))
         );
         return ResponseEntity.status(ErrorCode.INVALID_INPUT.getStatus()).body(response);
     }

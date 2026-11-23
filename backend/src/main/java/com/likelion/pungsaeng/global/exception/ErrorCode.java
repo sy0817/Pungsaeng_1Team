@@ -22,6 +22,14 @@ public enum ErrorCode {
     // 유저
     DUPLICATE_LOGIN_ID(HttpStatus.CONFLICT, "USER001", "이미 사용 중인 아이디입니다"),
 
+    // 타로 / 고민
+    TAROT_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "TAROT001", "존재하지 않는 타로 카드입니다"),
+    SYMPTOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "SYMPTOM001", "존재하지 않는 고민이 포함되어 있습니다"),
+
+    // 처방전
+    PRESCRIPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "PRESCRIPTION001", "존재하지 않는 처방전입니다"),
+    PRESCRIPTION_FORBIDDEN(HttpStatus.FORBIDDEN, "PRESCRIPTION002", "해당 처방전에 접근할 권한이 없습니다"),
+
     // 서버
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "E500", "서버 내부 오류가 발생했습니다");
 
