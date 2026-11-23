@@ -15,6 +15,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -35,7 +36,11 @@ import java.util.List;
  */
 @Getter
 @Entity
-@Table(name = "consultation")
+@Table(
+        name = "consultation",
+        // 마이페이지 처방 목록(최신순) · 기간 통계 조회용
+        indexes = @Index(name = "idx_consultation_user_created", columnList = "user_id, created_at")
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Consultation extends BaseTimeEntity {
 

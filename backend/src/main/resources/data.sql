@@ -94,3 +94,8 @@ UPDATE tarot_card SET
     reversed_quote  = '넘어진 자리에서 다시 일어서는 법을 배우는 시간입니다.',
     reversed_advice = '무리하게 한계를 밀어붙이기보다, 오늘은 이미 아는 문제를 다시 풀며 자신감을 먼저 회복하세요.'
 WHERE card_id = 'CHALLENGE';
+
+-- 카드 표시 키워드 (마이페이지 카드 통계용, 비어 있으면 카드 이름으로 응답)
+-- 프론트 시안(mypageData.js)에 있는 2장만 채움. TODO: 나머지 8장 기획 확정 후 채우기
+UPDATE tarot_card SET display_keyword = '한계 돌파 · 압박 극복' WHERE card_id = 'CHALLENGE';
+UPDATE tarot_card SET display_keyword = '루틴 성립 · 번아웃 방지' WHERE card_id = 'EFFORT';
