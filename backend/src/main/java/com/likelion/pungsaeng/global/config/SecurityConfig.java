@@ -40,7 +40,9 @@ public class SecurityConfig {
             // 인증
             "/api/v1/auth/signup",
             "/api/v1/auth/check-id",
-            "/api/v1/auth/login"
+            "/api/v1/auth/login",
+            // Access Token 이 만료된 상태로 호출하므로 인증 없이 허용 (Refresh Token 쿠키로 자체 검증)
+            "/api/v1/auth/reissue"
     };
 
     private final JwtUtil jwtUtil;

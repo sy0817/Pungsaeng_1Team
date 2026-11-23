@@ -7,6 +7,7 @@ import com.likelion.pungsaeng.domain.auth.dto.LoginResponse;
 import com.likelion.pungsaeng.domain.auth.dto.LoginResult;
 import com.likelion.pungsaeng.domain.auth.dto.SignupRequest;
 import com.likelion.pungsaeng.domain.auth.dto.SignupResponse;
+import com.likelion.pungsaeng.domain.auth.entity.RefreshToken;
 import com.likelion.pungsaeng.domain.auth.repository.RefreshTokenRepository;
 import com.likelion.pungsaeng.domain.user.entity.User;
 import com.likelion.pungsaeng.domain.user.repository.UserRepository;
@@ -85,14 +86,66 @@ public class AuthService {
 
         String accessToken = jwtUtil.createAccessToken(user.getId());
         String refreshToken = jwtUtil.createRefreshToken(user.getId());
-        long refreshExpirationMs = jwtUtil.getRefreshTokenExpirationMs();
 
-        refreshTokenRepository.upsert(
-                user.getId(),
-                JwtUtil.hashToken(refreshToken),
-                LocalDateTime.now().plus(Duration.ofMillis(refreshExpirationMs))
-        );
+        refreshTokenRepository.upsert(user.getId(), JwtUtil.hashToken(refreshToken), newRefreshExpiresAt());
 
+        return loginResult(user, accessToken, refreshToken);
+    }
+
+    /**
+     * 토큰 재발급 (Refresh Token rotation)
+     *
+     * - 서명·만료·타입(REFRESH) 검증 후, DB 에 저장된 해시와 일치해야 재발급한다
+     * - 성공하면 Access / Refresh Token 을 모두 새로 발급하고, 만료는 지금부터 다시 14일 (슬라이딩)
+     * - 서명은 유효한데 DB 에 없는 토큰(이미 교체됨) = 탈취로 보고 그 유저의 Refresh Token 을 삭제 (강제 로그아웃)
+     * - 실패해도 강제 로그아웃(삭제)은 반영돼야 하므로 CustomException 으로는 롤백하지 않는다
+     *
+     * @param refreshToken 쿠키의 Refresh Token (없으면 null)
+     * @throws CustomException 쿠키 없음 AUTH002, 위조·재사용·Access Token 사용 AUTH003, 만료 AUTH004
+     */
+    @Transactional(noRollbackFor = CustomException.class)
+    public LoginResult reissue(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
+        }
+
+        Long userId = jwtUtil.validateAndGetUserId(refreshToken, JwtUtil.TokenType.REFRESH);
+        String oldTokenHash = JwtUtil.hashToken(refreshToken);
+
+        RefreshToken stored = refreshTokenRepository.findByTokenHash(oldTokenHash)
+                .filter(token -> token.getUser().getId().equals(userId))
+                .orElseThrow(() -> forceLogout(userId, ErrorCode.INVALID_TOKEN));
+
+        if (stored.isExpired(LocalDateTime.now())) {
+            throw forceLogout(userId, ErrorCode.EXPIRED_TOKEN);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> forceLogout(userId, ErrorCode.UNAUTHORIZED));
+
+        String newAccessToken = jwtUtil.createAccessToken(userId);
+        String newRefreshToken = jwtUtil.createRefreshToken(userId);
+
+        // 그 사이 다른 요청이 먼저 교체했다면 0 -> 같은 토큰이 두 번 쓰인 것이므로 재사용으로 처리
+        int rotated = refreshTokenRepository.rotate(
+                userId, oldTokenHash, JwtUtil.hashToken(newRefreshToken), newRefreshExpiresAt());
+        if (rotated == 0) {
+            throw forceLogout(userId, ErrorCode.INVALID_TOKEN);
+        }
+
+        return loginResult(user, newAccessToken, newRefreshToken);
+    }
+
+    private CustomException forceLogout(Long userId, ErrorCode errorCode) {
+        refreshTokenRepository.deleteByUserId(userId);
+        return new CustomException(errorCode);
+    }
+
+    private LocalDateTime newRefreshExpiresAt() {
+        return LocalDateTime.now().plus(Duration.ofMillis(jwtUtil.getRefreshTokenExpirationMs()));
+    }
+
+    private LoginResult loginResult(User user, String accessToken, String refreshToken) {
         LoginResponse response = new LoginResponse(
                 accessToken,
                 "Bearer",
@@ -100,7 +153,7 @@ public class AuthService {
                 user.getLoginId(),
                 user.getTitle().getLabel()
         );
-        return new LoginResult(response, refreshToken, refreshExpirationMs);
+        return new LoginResult(response, refreshToken, jwtUtil.getRefreshTokenExpirationMs());
     }
 
     // 72바이트 초과 비밀번호는 BCrypt 가 처리하지 못하므로(Spring Security 는 예외 발생) 바로 실패 처리
