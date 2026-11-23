@@ -48,4 +48,49 @@ ON DUPLICATE KEY UPDATE
     recommended_time = new.recommended_time,
     recommended_env  = new.recommended_env;
 
--- Combination_Rule / Tarot_Action_Master 는 카드·고민 데이터 확정 후 이 파일 아래에 추가
+-- =====================================================================
+-- 카드 + 고민 조합 규칙 / 타로 지침
+-- TODO: 지금은 프론트 시안(prescriptionData.js)을 옮긴 테스트용 데이터. 기획 확정 후 전체 조합 채우기
+-- 규칙이 없는 조합은 키워드 = 카드.keyword_prefix + 고민.keyword_suffix, 종합 조언 = null 로 응답된다
+-- =====================================================================
+
+-- 도전과 극복 x 개념이 부족해요
+INSERT INTO combination_rule (rule_id, card_id, symptom_id, custom_keyword, comprehensive_advice) VALUES
+(1, 'CHALLENGE', 1, '돌파와 뼈대 재건',
+    '성급하게 심화 문제를 풀지 말고, 교과서 기본 정의와 예제 증명에 대한 3회독 복습이 시급합니다.')
+AS new
+ON DUPLICATE KEY UPDATE
+    card_id              = new.card_id,
+    symptom_id           = new.symptom_id,
+    custom_keyword       = new.custom_keyword,
+    comprehensive_advice = new.comprehensive_advice;
+
+-- 지침은 (카드, 과목, 고민) 으로 찾고, 없으면 (카드, ETC, 고민) 공통 지침으로 대체한다
+INSERT INTO tarot_action_master (action_id, card_id, symptom_id, subject_type, title, description, tag) VALUES
+(1, 'CHALLENGE', 1, 'MATH', '25분 뽀모도로 타이머 켜고 개념서 2쪽 정독하기',
+    '휴대폰 알림을 완전히 끄고 문제 풀이 없이 공식 유도와 논리적 흐름만을 2쪽 온전히 정독합니다.', '25분 집중'),
+(2, 'CHALLENGE', 1, 'MATH', '심화 중단, 대표 예제 3문항 백지 풀이 3회 반복',
+    '가장 대표적인 필수 예제 3문항을 선정해 풀이 과정을 백지에 손으로 막힘없이 써내려갈 때까지 반복합니다.', '3회독 복습'),
+(3, 'CHALLENGE', 1, 'MATH', '학습 시작 전 책상 위 불필요한 물건 모두 치우기',
+    '교재 1권, 풀이용 스프링 노트 1권, 펜 1자루를 제외한 간식과 스마트폰을 책상 아래로 격리합니다.', '시각적 정돈'),
+(4, 'CHALLENGE', 1, 'ETC', '오늘 막힌 개념 1개를 골라 백지에 설명해 보기',
+    '교재를 덮고 개념의 정의와 예시를 내 말로 적은 뒤, 교재와 비교해 빠진 부분을 채웁니다.', '메타인지'),
+-- 도전과 극복 x 집중이 오래 안 돼요 (보조 고민으로 골랐을 때도 지침 1개가 반영된다)
+(5, 'CHALLENGE', 3, 'ETC', '휴대폰은 다른 방에 두고 50분 타이머 맞추기',
+    '알림이 보이지 않는 곳에 휴대폰을 두고, 타이머가 울릴 때까지 자리에서 일어나지 않습니다.', '환경 차단'),
+(6, 'CHALLENGE', 3, 'ETC', '집중이 끊기면 할 일을 한 줄로 적고 다시 시작하기',
+    '떠오른 잡생각을 메모지에 한 줄로 적어 두고 바로 하던 문제로 돌아옵니다.', '잡념 정리')
+AS new
+ON DUPLICATE KEY UPDATE
+    card_id      = new.card_id,
+    symptom_id   = new.symptom_id,
+    subject_type = new.subject_type,
+    title        = new.title,
+    description  = new.description,
+    tag          = new.tag;
+
+-- 역방향 카드 문구 (비어 있으면 정방향 문구로 응답). TODO: 10장 모두 기획 확정 후 채우기 - 아래는 테스트용 예시
+UPDATE tarot_card SET
+    reversed_quote  = '넘어진 자리에서 다시 일어서는 법을 배우는 시간입니다.',
+    reversed_advice = '무리하게 한계를 밀어붙이기보다, 오늘은 이미 아는 문제를 다시 풀며 자신감을 먼저 회복하세요.'
+WHERE card_id = 'CHALLENGE';
