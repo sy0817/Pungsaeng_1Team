@@ -1,5 +1,6 @@
 package com.likelion.pungsaeng.domain.tarot.entity;
 
+import com.likelion.pungsaeng.global.common.enums.CardDirection;
 import com.likelion.pungsaeng.global.common.enums.RecommendedTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,6 +36,13 @@ public class TarotCard {
     @Column(name = "advice", nullable = false, columnDefinition = "TEXT")
     private String advice;
 
+    // 역방향 카드용 문구 (없으면 정방향 문구 사용)
+    @Column(name = "reversed_quote")
+    private String reversedQuote;
+
+    @Column(name = "reversed_advice", columnDefinition = "TEXT")
+    private String reversedAdvice;
+
     @Column(name = "keyword_prefix", nullable = false, length = 50)
     private String keywordPrefix;
 
@@ -48,14 +56,30 @@ public class TarotCard {
 
     @Builder
     public TarotCard(String id, String name, String imageUrl, String quote, String advice,
+                     String reversedQuote, String reversedAdvice,
                      String keywordPrefix, RecommendedTime recommendedTime, String recommendedEnv) {
         this.id = id;
         this.name = name;
         this.imageUrl = imageUrl;
         this.quote = quote;
         this.advice = advice;
+        this.reversedQuote = reversedQuote;
+        this.reversedAdvice = reversedAdvice;
         this.keywordPrefix = keywordPrefix;
         this.recommendedTime = recommendedTime;
         this.recommendedEnv = recommendedEnv;
+    }
+
+    public String getQuote(CardDirection direction) {
+        return pick(direction, quote, reversedQuote);
+    }
+
+    public String getAdvice(CardDirection direction) {
+        return pick(direction, advice, reversedAdvice);
+    }
+
+    private String pick(CardDirection direction, String upright, String reversed) {
+        boolean useReversed = direction == CardDirection.REVERSED && reversed != null && !reversed.isBlank();
+        return useReversed ? reversed : upright;
     }
 }

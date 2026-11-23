@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -69,8 +70,9 @@ public class Consultation extends BaseTimeEntity {
     @Column(name = "card_direction", nullable = false, length = 20)
     private CardDirection cardDirection;
 
-    // 선택한 복수 고민 - 진단과 생명주기를 같이 함
+    // 선택한 복수 고민 - 진단과 생명주기를 같이 함. 저장 순서(= 사용자가 고른 순서)대로 조회
     @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id ASC")
     private List<ConsultationSymptom> consultationSymptoms = new ArrayList<>();
 
     @Builder
