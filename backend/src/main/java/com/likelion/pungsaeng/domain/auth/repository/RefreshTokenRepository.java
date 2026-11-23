@@ -31,4 +31,26 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     void upsert(@Param("userId") Long userId,
                 @Param("tokenHash") String tokenHash,
                 @Param("expiresAt") LocalDateTime expiresAt);
+
+    /**
+     * 재발급 시 토큰 교체 - 기존 해시가 그대로일 때만 바꾼다 (조건부 UPDATE).
+     * 같은 토큰으로 동시에 두 번 요청하면 한쪽만 1을 돌려받고, 다른 쪽은 0 -> 재사용으로 처리한다.
+     *
+     * @return 교체된 행 수 (0 또는 1)
+     */
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+            update RefreshToken r
+            set r.tokenHash = :newTokenHash, r.expiresAt = :newExpiresAt
+            where r.user.id = :userId and r.tokenHash = :oldTokenHash
+            """)
+    int rotate(@Param("userId") Long userId,
+               @Param("oldTokenHash") String oldTokenHash,
+               @Param("newTokenHash") String newTokenHash,
+               @Param("newExpiresAt") LocalDateTime newExpiresAt);
+
+    // 강제 로그아웃 (재사용 감지, 만료) - 로그아웃 API 에서도 사용 가능
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("delete from RefreshToken r where r.user.id = :userId")
+    int deleteByUserId(@Param("userId") Long userId);
 }
