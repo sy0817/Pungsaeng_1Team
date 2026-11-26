@@ -6,12 +6,12 @@ function Field({ label, value, color }) {
   return (
     <div style={{ display: "flex", flex: "1 0 0", minWidth: 0, flexDirection: "column", alignItems: "flex-start", padding: "8px", borderRadius: "8px", background: "#201C36" }}>
       <span style={{ ...serif, color: "#D8C3AD", fontSize: "11px", lineHeight: "16px", letterSpacing: "0.44px" }}>{label}</span>
-      <span style={{ ...serif, color, fontSize: "16px", lineHeight: "24px", whiteSpace: "nowrap" }}>{value}</span>
+      <span style={{ ...serif, color, fontSize: "16px", lineHeight: "24px", wordBreak: "keep-all" }}>{value}</span>
     </div>
   );
 }
 
-// 우측 상단: 고민 진단 요약
+// 우측 상단: 고민 진단 요약 (core 는 종합 조언이 있을 때만 표시)
 function Prescription_Summary({ subject, problem, core }) {
   return (
     <div
@@ -37,11 +37,13 @@ function Prescription_Summary({ subject, problem, core }) {
         <Field label="진단된 문제 상태" value={problem} color="#FFC32D" />
       </div>
 
-      <div style={{ alignSelf: "stretch", paddingTop: "4px" }}>
-        <div style={{ padding: "8px", borderRadius: "8px", background: "#0E0A23" }}>
-          <span style={{ ...serif, color: "#D8C3AD", fontSize: "12px", lineHeight: "18px", letterSpacing: "0.12px", wordBreak: "keep-all" }}>{core}</span>
+      {core && (
+        <div style={{ alignSelf: "stretch", paddingTop: "4px" }}>
+          <div style={{ padding: "8px", borderRadius: "8px", background: "#0E0A23" }}>
+            <span style={{ ...serif, color: "#D8C3AD", fontSize: "12px", lineHeight: "18px", letterSpacing: "0.12px", wordBreak: "keep-all" }}>{core}</span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

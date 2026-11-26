@@ -44,12 +44,31 @@ function Check() {
       setError("과목을 1개 선택해주세요.");
       return;
     }
+    const subjectInfo = SUBJECTS.find((s) => s.label === subject);
+    const hasDetailList = (SUBJECT_DETAILS[subject] ?? []).length > 0;
+    if (hasDetailList && !detail) {
+      setError("세부 과목을 1개 선택해주세요.");
+      return;
+    }
+    if (symptomIds.length === 0) {
+      setError("고민 증상을 1개 이상 선택해주세요.");
+      return;
+    }
+
+    // 처방전 생성 API(POST /api/v1/prescriptions)에 보낼 값 - 타로 페이지에서 카드 id 를 더해 전송
+    const request = {
+      subject: subjectInfo.type,
+      subSubject: detail ?? subject, // 세부 과목이 없는 과목은 과목 이름을 그대로 보냄
+      symptomIds,
+      primarySymptomId: symptomIds[0], // 가장 먼저 고른 증상을 핵심 고민으로 사용
+    };
+
     // 타로 페이지 "선택한 진단" 칩에 보여줄 요약
     const subjectText = detail ? `${subject} (${detail})` : subject;
-    const symptomText = SYMPTOMS.filter((s) => symptomIds.includes(s.id))
-      .map((s) => s.short)
+    const symptomText = symptomIds
+      .map((id) => SYMPTOMS.find((s) => s.id === id).short)
       .join(" / ");
-    navigate("/taro", { state: { diagnosis: symptomText ? `${subjectText} · ${symptomText}` : subjectText } });
+    navigate("/taro", { state: { diagnosis: symptomText ? `${subjectText} · ${symptomText}` : subjectText, request } });
   };
 
   return (

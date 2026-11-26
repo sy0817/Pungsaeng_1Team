@@ -8,4 +8,6 @@ export const ID_MESSAGES = {
   available: { ok: true, text: "사용 가능한 아이디입니다." },
   invalid: { ok: false, text: "아이디는 영문, 숫자 조합 6~12자로 입력해주세요." },
   unchecked: { ok: false, text: "아이디 중복 확인을 해주세요." },
+  taken: { ok: false, text: "이미 사용 중인 아이디입니다." },
+  error: { ok: false, text: "중복 확인에 실패했어요. 잠시 후 다시 시도해주세요." },
 };

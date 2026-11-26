@@ -1,5 +1,5 @@
 import { StarIcon } from "../../components/Auth_Icons";
-import { BulbIcon, IdeaIcon, ClipboardIcon, ArrowRightIcon } from "./Taro_Icons";
+import { IdeaIcon, ClipboardIcon, ArrowRightIcon } from "./Taro_Icons";
 
 const serif = { fontFamily: '"Liberation Serif"' };
 
@@ -25,8 +25,9 @@ function Insight({ icon, label, children }) {
 }
 
 // 선택된 카드의 해석 패널
-function Taro_Result({ card, detail = {}, onPrescription }) {
-  const { arcana = "ARCANA", description, match, quote, status, advice } = detail;
+// card: taroData.js 의 카드 1장 (label, image, keyword, quote, advice)
+function Taro_Result({ card, onPrescription, loading = false, error = "" }) {
+  const { keyword, quote, advice } = card;
 
   return (
     <div
@@ -63,14 +64,14 @@ function Taro_Result({ card, detail = {}, onPrescription }) {
 
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "17px" }}>
           <span style={{ ...serif, color: "#FFC174", fontSize: "11px", fontWeight: 700, lineHeight: "16px", letterSpacing: "1.1px", textTransform: "uppercase" }}>
-            {arcana}
+            MAJOR ARCANA
           </span>
           <span style={{ ...serif, color: "#E6DEFF", fontSize: "18px", lineHeight: "26px", letterSpacing: "-0.09px", paddingTop: "3px" }}>
             {card.label}
           </span>
-          {description && (
+          {keyword && (
             <span style={{ ...serif, color: "#D8C3AD", fontSize: "12px", lineHeight: "18px", letterSpacing: "0.12px", textAlign: "center" }}>
-              {description}
+              {keyword}
             </span>
           )}
         </div>
@@ -78,7 +79,7 @@ function Taro_Result({ card, detail = {}, onPrescription }) {
 
       {/* 우측: 해석 */}
       <div style={{ display: "flex", flex: "1 0 0", minWidth: 0, flexDirection: "column", alignItems: "flex-start" }}>
-        {/* 배지 + 일치율 */}
+        {/* 배지 */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", alignSelf: "stretch", paddingBottom: "8px" }}>
           <div
             style={{
@@ -96,17 +97,12 @@ function Taro_Result({ card, detail = {}, onPrescription }) {
               오늘의 선택된 통찰
             </span>
           </div>
-          {match && (
-            <span style={{ ...serif, color: "#D8C3AD", fontSize: "11px", fontWeight: 700, lineHeight: "16px", letterSpacing: "0.44px", whiteSpace: "nowrap" }}>
-              일치율 {match}
-            </span>
-          )}
         </div>
 
         {/* 인용 문구 */}
         <div style={{ paddingTop: "4px", alignSelf: "stretch" }}>
           <div style={{ ...serif, color: "#E6DEFF", fontSize: "30px", lineHeight: "38px", letterSpacing: "-0.75px", wordBreak: "keep-all" }}>
-            {quote ?? `"${card.label}"`}
+            {quote ? `"${quote}"` : `"${card.label}"`}
           </div>
         </div>
 
@@ -121,24 +117,17 @@ function Taro_Result({ card, detail = {}, onPrescription }) {
         </div>
 
         {/* 해석 */}
-        {(status || advice) && (
+        {advice && (
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignSelf: "stretch", paddingBottom: "24px" }}>
-            {status && (
-              <Insight icon={<BulbIcon />} label="현재 학업 상태:">
-                {status}
-              </Insight>
-            )}
-            {advice && (
-              <Insight icon={<IdeaIcon />} label="아르카나의 권고:">
-                {advice}
-              </Insight>
-            )}
+            <Insight icon={<IdeaIcon />} label="아르카나의 권고:">
+              {advice}
+            </Insight>
           </div>
         )}
 
         {/* 처방전 이동 */}
         <div
-          onClick={onPrescription}
+          onClick={loading ? undefined : onPrescription}
           style={{
             display: "flex",
             alignItems: "center",
@@ -150,13 +139,22 @@ function Taro_Result({ card, detail = {}, onPrescription }) {
             borderRadius: "12px",
             background: "linear-gradient(90deg, #F59E0B 0%, #E0A800 100%)",
             boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)",
-            cursor: "pointer",
+            cursor: loading ? "wait" : "pointer",
+            opacity: loading ? 0.7 : 1,
           }}
         >
           <ClipboardIcon />
-          <span style={{ ...serif, color: "#613B00", fontSize: "16px", lineHeight: "24px", whiteSpace: "nowrap" }}>처방전 보러 가기</span>
+          <span style={{ ...serif, color: "#613B00", fontSize: "16px", lineHeight: "24px", whiteSpace: "nowrap" }}>
+            {loading ? "처방전 만드는 중..." : "처방전 보러 가기"}
+          </span>
           <ArrowRightIcon />
         </div>
+
+        {error && (
+          <span style={{ ...serif, alignSelf: "stretch", paddingTop: "10px", textAlign: "center", color: "#FB5541", fontSize: "12px", lineHeight: "16px" }}>
+            {error}
+          </span>
+        )}
       </div>
     </div>
   );
