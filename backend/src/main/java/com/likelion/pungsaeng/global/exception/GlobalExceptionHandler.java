@@ -3,9 +3,12 @@ package com.likelion.pungsaeng.global.exception;
 import com.likelion.pungsaeng.global.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -40,6 +43,41 @@ public class GlobalExceptionHandler {
                 errors
         );
         return ResponseEntity.status(ErrorCode.INVALID_INPUT.getStatus()).body(response);
+    }
+
+    // JSON 형식 오류, 본문 누락 등 (기존에는 500 으로 처리됨)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<?>> handleNotReadableException(HttpMessageNotReadableException e) {
+        log.warn("요청 본문을 읽을 수 없음: {}", e.getMessage());
+        ApiResponse<?> response = ApiResponse.error(
+                ErrorCode.INVALID_INPUT.getCode(),
+                ErrorCode.INVALID_INPUT.getMessage(),
+                null
+        );
+        return ResponseEntity.status(ErrorCode.INVALID_INPUT.getStatus()).body(response);
+    }
+
+    // 경로 변수·쿼리 파라미터 타입 오류 (예: /prescriptions/abc) - 기존에는 500 으로 처리됨
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<?>> handleTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.warn("요청 파라미터 타입 오류: {}", e.getName());
+        ApiResponse<?> response = ApiResponse.error(
+                ErrorCode.INVALID_INPUT.getCode(),
+                ErrorCode.INVALID_INPUT.getMessage(),
+                List.of(Map.of("field", e.getName(), "reason", "형식이 올바르지 않습니다."))
+        );
+        return ResponseEntity.status(ErrorCode.INVALID_INPUT.getStatus()).body(response);
+    }
+
+    // 존재하지 않는 경로 (기존에는 500 으로 처리됨)
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleNoResourceFoundException(NoResourceFoundException e) {
+        ApiResponse<?> response = ApiResponse.error(
+                ErrorCode.RESOURCE_NOT_FOUND.getCode(),
+                ErrorCode.RESOURCE_NOT_FOUND.getMessage(),
+                null
+        );
+        return ResponseEntity.status(ErrorCode.RESOURCE_NOT_FOUND.getStatus()).body(response);
     }
 
     @ExceptionHandler(Exception.class)

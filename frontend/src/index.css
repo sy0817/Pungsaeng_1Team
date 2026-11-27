@@ -50,6 +50,23 @@ body {
   min-height: 100vh;
   background: linear-gradient(0deg, #141029 0%, #141029 100%), #fff;
 }
+/* 로그인/회원가입 인풋 */
+.auth-input {
+  width: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #e6deff;
+  font-family: "Liberation Serif", serif;
+  font-size: 14px;
+  line-height: normal;
+}
+.auth-input::placeholder {
+  color: rgba(160, 142, 122, 0.6);
+  font-family: Pretendard, sans-serif;
+  font-weight: 500;
+}
 h1,
 h2 {
   font-family: var(--heading);
