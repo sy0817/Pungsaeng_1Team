@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { getUserId, clearSession } from "../utils/auth";
+import logo from "../assets/logo/logo.png";
 
 const activeIcon = (
   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="10" viewBox="0 0 11 10" fill="none">
@@ -102,7 +103,7 @@ function Header() {
       {/* Logo */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
         <img
-          src="/src/assets/logo/logo.png"
+          src={logo}
           alt="logo"
           style={{ width: "48px", height: "39px", aspectRatio: "16/13", objectFit: "cover" }}
         />
