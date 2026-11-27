@@ -96,11 +96,11 @@ function Mypage_Profile({ userId, profile, stats }) {
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px" }}>
             <span style={{ ...serif, color: "#E6DEFF", fontSize: "22px", lineHeight: "30px", letterSpacing: "-0.22px", whiteSpace: "nowrap" }}>{userId} 학생</span>
-            <span style={{ ...chip, background: "#36314C", color: "#FFC174" }}>{profile.classInfo}</span>
-            <span style={{ ...chip, background: "rgba(47, 58, 163, 0.4)", color: "#BDC2FF" }}>{profile.track}</span>
+            {profile.classInfo && <span style={{ ...chip, background: "#36314C", color: "#FFC174" }}>{profile.classInfo}</span>}
+            {profile.track && <span style={{ ...chip, background: "rgba(47, 58, 163, 0.4)", color: "#BDC2FF" }}>{profile.track}</span>}
           </div>
           <div style={{ ...serif, paddingTop: "2px", color: "#D8C3AD", fontSize: "14px", lineHeight: "22px" }}>
-            🔮 고교 아르카나 학습 성향: <span style={{ color: "#FFC174" }}>{profile.archetype} </span>(최근 진단: {profile.lastDiagnosis})
+            🔮 고교 아르카나 학습 성향: <span style={{ color: "#FFC174" }}>{profile.archetype} </span>{profile.lastDiagnosis ? `(최근 진단: ${profile.lastDiagnosis})` : ""}
           </div>
         </div>
       </div>

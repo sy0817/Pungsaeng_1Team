@@ -67,12 +67,16 @@ function Prescription_Card({ card }) {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", alignSelf: "stretch", paddingBottom: "4px" }}>
-          <span style={mono}>{card.no}</span>
+          <span style={mono}>{card.no ?? "MAJOR"}</span>
           <span style={mono}>ARCANA</span>
         </div>
         <img src={card.image} alt={card.label} style={{ display: "block", width: "170px", height: "250px", borderRadius: "10px", objectFit: "cover" }} />
         <span style={{ ...serif, color: "#FFC174", fontSize: "18px", lineHeight: "26px", letterSpacing: "-0.09px", paddingTop: "8px" }}>{card.label}</span>
-        <span style={{ ...serif, color: "#FFDF9F", fontSize: "12px", lineHeight: "18px", letterSpacing: "0.12px" }}>{card.english}</span>
+        {card.subtitle && (
+          <span style={{ ...serif, color: "#FFDF9F", fontSize: "12px", lineHeight: "18px", letterSpacing: "0.12px", textAlign: "center", wordBreak: "keep-all" }}>
+            {card.subtitle}
+          </span>
+        )}
       </div>
 
       {/* 카드의 조언 */}

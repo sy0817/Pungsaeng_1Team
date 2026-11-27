@@ -8,25 +8,38 @@ import Login_Brand from "./Login_Brand";
 import Login_Options from "./Login_Options";
 import Login_SignupPrompt from "./Login_SignupPrompt";
 import Error_Banner from "./Error_Banner";
-import { saveUserId } from "../../utils/auth";
+import { login } from "../../api/auth";
+import { getErrorMessage } from "../../api/client";
+import { getSavedLoginId, saveLoginId, clearSavedLoginId } from "../../utils/auth";
 
 function Login() {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState("");
+  const [userId, setUserId] = useState(getSavedLoginId()); // "아이디 저장"한 아이디가 있으면 미리 채움
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [remember, setRemember] = useState(false);
+  const [remember, setRemember] = useState(getSavedLoginId() !== "");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    if (loading) return;
     if (!userId.trim() || !password) {
       setError("아이디 또는 비밀번호가 올바르지 않습니다.");
       return;
     }
+
     setError("");
-    // TODO: 로그인 API 연동 (성공 시에만 아래 저장/이동 실행)
-    saveUserId(userId.trim());
-    navigate("/check");
+    setLoading(true);
+    try {
+      await login({ loginId: userId.trim(), password }); // 성공하면 토큰/아이디가 저장됨
+      if (remember) saveLoginId(userId.trim());
+      else clearSavedLoginId();
+      navigate("/mypage"); // 로그인 후 첫 화면은 마이페이지
+    } catch (e) {
+      setError(getErrorMessage(e, "로그인에 실패했어요. 잠시 후 다시 시도해주세요."));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEnter = (e) => {
@@ -143,7 +156,7 @@ function Login() {
 
             <Login_Options remember={remember} onRememberChange={setRemember} />
 
-            <CTA label="로그인" width="100%" onClick={handleLogin} />
+            <CTA label={loading ? "로그인 중..." : "로그인"} width="100%" onClick={handleLogin} />
           </div>
 
           <Login_SignupPrompt onSignup={() => navigate("/signup")} />

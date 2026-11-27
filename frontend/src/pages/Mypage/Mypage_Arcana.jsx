@@ -43,6 +43,11 @@ function ArcanaWidget({ rank, count, label, keywords, quote, image, accent, glow
 function Mypage_Arcana({ userId, data }) {
   return (
     <Mypage_Card accent="#FFC32D" title={data.title} tag={data.tag} tagBg="rgba(224, 168, 0, 0.2)" tagColor="#FFC32D">
+      {data.top.length === 0 && (
+        <span style={{ ...serif, color: "#D8C3AD", fontSize: "12px", lineHeight: "18px", alignSelf: "stretch", textAlign: "center", padding: "12px 0" }}>
+          아직 뽑은 타로 카드가 없어요.
+        </span>
+      )}
       <div style={{ display: "flex", alignItems: "stretch", gap: "16px", alignSelf: "stretch" }}>
         {data.top.map((item) => (
           <ArcanaWidget key={item.rank} {...item} />

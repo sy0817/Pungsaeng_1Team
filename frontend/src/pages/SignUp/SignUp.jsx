@@ -8,12 +8,18 @@ import Signup_PasswordField from "./Signup_PasswordField";
 import Signup_ConfirmField from "./Signup_ConfirmField";
 import Signup_Button from "./Signup_Button";
 import Signup_Footer from "./Signup_Footer";
-import { ID_RULE, PW_RULE } from "./signupRules";
+import Status_Pill from "./Status_Pill";
+import { StarIcon } from "../../components/Auth_Icons";
+import { ID_RULE, PW_RULE, RED } from "./signupRules";
+import { checkLoginId, signup } from "../../api/auth";
+import { getErrorCode, getErrorMessage } from "../../api/client";
 
 function Signup() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState("");
-  const [idStatus, setIdStatus] = useState(null); // null | "available" | "invalid" | "unchecked"
+  const [idStatus, setIdStatus] = useState(null); // null | "available" | "invalid" | "unchecked" | "taken" | "error"
+  const [submitError, setSubmitError] = useState(""); // 회원가입 요청이 실패했을 때 서버가 준 문구
+  const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [confirm, setConfirm] = useState("");
@@ -32,12 +38,23 @@ function Signup() {
     setPasswordError(false);
   };
 
-  const handleCheckId = () => {
-    // TODO: 아이디 중복 확인 API 연동
-    setIdStatus(ID_RULE.test(userId) ? "available" : "invalid");
+  const handleCheckId = async () => {
+    if (!ID_RULE.test(userId)) {
+      setIdStatus("invalid");
+      return;
+    }
+    try {
+      const { available } = await checkLoginId(userId);
+      setIdStatus(available ? "available" : "taken");
+    } catch {
+      setIdStatus("error");
+    }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (loading) return;
+    setSubmitError("");
+
     if (idStatus !== "available") {
       setIdStatus(ID_RULE.test(userId) ? "unchecked" : "invalid");
       return;
@@ -47,7 +64,17 @@ function Signup() {
       return;
     }
     if (password !== confirm) return;
-    // TODO: 회원가입 API 연동
+
+    setLoading(true);
+    try {
+      await signup({ loginId: userId, password, passwordConfirm: confirm });
+      navigate("/login"); // 가입 완료 -> 로그인 화면으로
+    } catch (e) {
+      if (getErrorCode(e) === "USER001") setIdStatus("taken"); // 그 사이 다른 사람이 같은 아이디로 가입
+      else setSubmitError(getErrorMessage(e, "회원가입에 실패했어요. 잠시 후 다시 시도해주세요."));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -108,7 +135,13 @@ function Signup() {
             matchState={matchState}
           />
 
-          <Signup_Button label="회원가입 완료" onClick={handleSubmit} />
+          {submitError && (
+            <Status_Pill color={RED} icon={<StarIcon color={RED} />}>
+              {submitError}
+            </Status_Pill>
+          )}
+
+          <Signup_Button label={loading ? "가입 중..." : "회원가입 완료"} onClick={handleSubmit} />
         </div>
 
         <Signup_Footer onLogin={() => navigate("/login")} />

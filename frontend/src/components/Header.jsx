@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { getUserId, clearUserId } from "../utils/auth";
+import { getUserId, clearSession } from "../utils/auth";
+import logo from "../assets/logo/logo.png";
 
 const activeIcon = (
   <svg xmlns="http://www.w3.org/2000/svg" width="11" height="10" viewBox="0 0 11 10" fill="none">
@@ -55,8 +56,21 @@ function Header() {
   const navigate = useNavigate();
   const userId = getUserId();
 
-  const handleLogout = () => {
-    clearUserId();
+  const handleLogout = async () => {
+    // ───────── 로그아웃 API 연결 (고1 담당) ─────────
+    // 1) src/api/auth.js 의 logout 주석을 먼저 푼다.
+    // 2) 맨 위에 아래 import 를 추가한다.
+    //      import { logout } from "../api/auth";
+    // 3) 아래 try/catch 주석을 푼다. (서버 호출이 실패해도 화면에서는 로그아웃 되도록 catch 는 비워 둠)
+    //
+    // try {
+    //   await logout();
+    // } catch {
+    //   // 실패해도 아래 정리 코드는 계속 실행
+    // }
+    // ────────────────────────────────────────────────
+
+    clearSession();
     navigate("/login");
   };
 
@@ -89,7 +103,7 @@ function Header() {
       {/* Logo */}
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
         <img
-          src="/src/assets/logo/logo.png"
+          src={logo}
           alt="logo"
           style={{ width: "48px", height: "39px", aspectRatio: "16/13", objectFit: "cover" }}
         />
@@ -109,7 +123,7 @@ function Header() {
       {/* Nav Tabs */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         {tabs.map((tab) => {
-          const isActive = location.pathname === tab.path;
+          const isActive = location.pathname === tab.path || location.pathname.startsWith(`${tab.path}/`);
           return (
             <div
               key={tab.path}

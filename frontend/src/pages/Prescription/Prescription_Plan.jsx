@@ -63,7 +63,7 @@ function Prescription_Plan({ actions }) {
 
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignSelf: "stretch" }}>
         {actions.map((action) => (
-          <ActionItem key={action.title} {...action} />
+          <ActionItem key={action.id} {...action} />
         ))}
       </div>
     </div>

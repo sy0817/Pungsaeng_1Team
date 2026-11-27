@@ -16,6 +16,11 @@ function Mypage_History({ data, onDetail, onDelete, onPrev, onNext, onNewTalk })
     <Mypage_Card accent="#BDC2FF" title={data.title} tag={data.tag}>
       <span style={{ ...serif, color: "#D8C3AD", fontSize: "12px", lineHeight: "18px", letterSpacing: "0.12px" }}>{data.description}</span>
 
+      {data.items.length === 0 && (
+        <span style={{ ...serif, color: "#D8C3AD", fontSize: "12px", lineHeight: "18px", alignSelf: "stretch", textAlign: "center", padding: "12px 0" }}>
+          아직 발급된 처방전이 없어요.
+        </span>
+      )}
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", alignSelf: "stretch" }}>
         {data.items.map(({ id, arcanaIcon, ...item }) => (
           <Past_Prescription

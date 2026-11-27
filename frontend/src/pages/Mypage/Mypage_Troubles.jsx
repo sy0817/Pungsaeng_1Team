@@ -32,6 +32,11 @@ function Mypage_Troubles({ data }) {
       <span style={{ ...serif, color: "#D8C3AD", fontSize: "12px", lineHeight: "18px", letterSpacing: "0.12px" }}>{data.description}</span>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "16px", alignSelf: "stretch", paddingTop: "4px" }}>
+        {data.items.length === 0 && (
+          <span style={{ ...serif, color: "#D8C3AD", fontSize: "12px", lineHeight: "18px", textAlign: "center", padding: "12px 0" }}>
+            아직 진단 기록이 없어요. 첫 상담을 시작해 보세요.
+          </span>
+        )}
         {data.items.map((item) => (
           <TroubleBar key={item.rank} {...item} />
         ))}
